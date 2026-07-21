@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import EntryDetail from '../../components/EntryDetail.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('tafseer');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+<EntryDetail
+  categoryTitle="Tafseer of the Quran"
+  basePath="/tafseer"
+  title={entry.data.title}
+  summary={entry.data.summary}
+  source={entry.data.source}
+  tags={entry.data.tags}
+>
+  <Content />
+</EntryDetail>

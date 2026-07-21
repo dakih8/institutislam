@@ -1,0 +1,111 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface EntryLike {
+  slug: string;
+  data: {
+    title: string;
+    summary: string;
+    source?: string;
+    tags?: string[];
+    order?: number;
+  };
+}
+
+interface Props {
+  categoryTitle: string;
+  categoryDescription: string;
+  basePath: string; // e.g. "/hadith"
+  entries: EntryLike[];
+}
+
+const { categoryTitle, categoryDescription, basePath, entries } = Astro.props;
+
+const sorted = [...entries].sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+---
+<Layout title={`${categoryTitle} — Islamic Knowledge Encyclopedia`} description={categoryDescription}>
+  <section class="category-hero">
+    <div class="container">
+      <a class="back-link" href="/">&larr; All categories</a>
+      <h1>{categoryTitle}</h1>
+      <p>{categoryDescription}</p>
+    </div>
+  </section>
+
+  <section class="entry-list">
+    <div class="container">
+      {sorted.length === 0 && <p class="empty">No entries have been published in this category yet.</p>}
+      <ul>
+        {sorted.map((entry) => (
+          <li>
+            <a href={`${basePath}/${entry.slug}`}>
+              <h2>{entry.data.title}</h2>
+              <p>{entry.data.summary}</p>
+              {entry.data.source && <span class="source">{entry.data.source}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .category-hero {
+    padding: 40px 0 8px;
+  }
+  .back-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-sage);
+  }
+  .back-link:hover {
+    color: var(--color-gold-dark);
+  }
+  .category-hero h1 {
+    margin-top: 12px;
+  }
+  .category-hero p {
+    color: var(--color-sage);
+    max-width: 640px;
+  }
+
+  .entry-list {
+    padding: 24px 0 60px;
+  }
+  .entry-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .entry-list li a {
+    display: block;
+    background: var(--color-white);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+  }
+  .entry-list li a:hover {
+    border-color: var(--color-gold);
+  }
+  .entry-list h2 {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+  .entry-list p {
+    color: var(--color-sage);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+  .source {
+    font-size: 0.78rem;
+    color: var(--color-gold-dark);
+    font-weight: 600;
+  }
+  .empty {
+    color: var(--color-sage);
+  }
+</style>

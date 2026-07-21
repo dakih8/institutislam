@@ -1,0 +1,128 @@
+---
+interface Props {
+  icon: string; // inline svg markup
+  title: string;
+  description: string;
+  href: string;
+}
+const { icon, title, description, href } = Astro.props;
+---
+<article class="category-card">
+  <div class="motif-rule"></div>
+  <div class="card-body">
+    <h2><span class="icon" set:html={icon} /> {title}</h2>
+    <p>{description}</p>
+  </div>
+  <div class="card-footer">
+    <form class="card-search" action={href} method="get">
+      <input type="search" name="q" placeholder="Search .." aria-label={`Search ${title}`} />
+      <button type="submit" aria-label={`Search ${title}`}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </form>
+    <a class="explore-link" href={href}>
+      Explore
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <polyline points="12 5 19 12 12 19" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+</article>
+
+<style>
+  .category-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-body {
+    padding: 24px 26px 8px;
+  }
+
+  .card-body h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+  }
+
+  .icon {
+    display: inline-flex;
+    color: var(--color-gold-dark);
+    flex-shrink: 0;
+  }
+  .icon :global(svg) {
+    width: 24px;
+    height: 24px;
+  }
+
+  .card-body p {
+    color: var(--color-sage);
+    font-size: 0.95rem;
+    margin-bottom: 0;
+  }
+
+  .card-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 26px 22px;
+    border-top: 1px solid var(--color-line);
+    margin-top: 18px;
+  }
+
+  .card-search {
+    flex: 1;
+    display: flex;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--color-parchment);
+  }
+  .card-search input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+  }
+  .card-search input:focus {
+    outline: none;
+  }
+  .card-search button {
+    width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-gold);
+    color: var(--color-white);
+    border: none;
+  }
+  .card-search button:hover {
+    background: var(--color-gold-dark);
+  }
+
+  .explore-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--color-green);
+    white-space: nowrap;
+  }
+  .explore-link:hover {
+    color: var(--color-gold-dark);
+  }
+</style>

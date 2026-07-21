@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryIndex from '../../components/CategoryIndex.astro';
+
+const entries = await getCollection('hadith');
+---
+<CategoryIndex
+  categoryTitle="Hadiths"
+  categoryDescription="Authentic hadiths with explanations of their meanings and benefits."
+  basePath="/hadith"
+  entries={entries}
+/>

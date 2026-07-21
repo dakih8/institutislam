@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryIndex from '../../components/CategoryIndex.astro';
+
+const entries = await getCollection('tafseer');
+---
+<CategoryIndex
+  categoryTitle="Tafseer of the Quran"
+  categoryDescription="The overall meaning of Quranic verses, drawn from trusted classical commentary."
+  basePath="/tafseer"
+  entries={entries}
+/>

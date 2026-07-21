@@ -1,0 +1,47 @@
+---
+import Header from '../components/Header.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'A structured English-language Islamic knowledge encyclopedia covering Tafseer, Hadith, Aqidah, Fiqh, Ethics, and Sira.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>&copy; {new Date().getFullYear()} Islamic Knowledge Encyclopedia. Content is provided for educational purposes; please verify matters of religious practice with a qualified scholar.</p>
+      </div>
+    </footer>
+
+    <style>
+      .site-footer {
+        border-top: 1px solid var(--color-line);
+        margin-top: 64px;
+        padding: 28px 0 40px;
+        background: var(--color-parchment-deep);
+      }
+      .footer-inner p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--color-sage);
+        text-align: center;
+      }
+    </style>
+  </body>
+</html>

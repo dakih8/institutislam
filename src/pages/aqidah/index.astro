@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryIndex from '../../components/CategoryIndex.astro';
+
+const entries = await getCollection('aqidah');
+---
+<CategoryIndex
+  categoryTitle="Doctrine of Monotheism"
+  categoryDescription="Core Islamic beliefs on the oneness of Allah and the pillars of faith."
+  basePath="/aqidah"
+  entries={entries}
+/>

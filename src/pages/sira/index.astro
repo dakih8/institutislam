@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryIndex from '../../components/CategoryIndex.astro';
+
+const entries = await getCollection('sira');
+---
+<CategoryIndex
+  categoryTitle="The Prophet's Biography"
+  categoryDescription="The life story of Prophet Muhammad, peace be upon him."
+  basePath="/sira"
+  entries={entries}
+/>

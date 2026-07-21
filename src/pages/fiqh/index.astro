@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryIndex from '../../components/CategoryIndex.astro';
+
+const entries = await getCollection('fiqh');
+---
+<CategoryIndex
+  categoryTitle="Summary of Fiqh"
+  categoryDescription="Purity, prayer, funerals, fasting, zakat, hajj, family matters, and transactions."
+  basePath="/fiqh"
+  entries={entries}
+/>

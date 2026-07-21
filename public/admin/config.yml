@@ -1,0 +1,60 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# After deploying to Netlify, enable "Identity" and "Git Gateway" in
+# Site settings, then invite yourself as a user under Identity.
+# That account is what you'll use to log in at yoursite.com/admin.
+
+publish_mode: editorial_workflow
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "tafseer"
+    label: "Tafseer (Quran Commentary)"
+    folder: "src/content/tafseer"
+    create: true
+    slug: "{{slug}}"
+    fields: &entryFields
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Summary", name: "summary", widget: "text", hint: "A one or two sentence overview shown on listing pages." }
+      - { label: "Source / Reference", name: "source", widget: "string", required: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Order on category page", name: "order", widget: "number", required: false, value_type: "int" }
+      - { label: "Full content", name: "body", widget: "markdown" }
+
+  - name: "hadith"
+    label: "Hadiths"
+    folder: "src/content/hadith"
+    create: true
+    slug: "{{slug}}"
+    fields: *entryFields
+
+  - name: "aqidah"
+    label: "Aqidah (Creed)"
+    folder: "src/content/aqidah"
+    create: true
+    slug: "{{slug}}"
+    fields: *entryFields
+
+  - name: "fiqh"
+    label: "Fiqh (Jurisprudence)"
+    folder: "src/content/fiqh"
+    create: true
+    slug: "{{slug}}"
+    fields: *entryFields
+
+  - name: "ethics"
+    label: "Ethics"
+    folder: "src/content/ethics"
+    create: true
+    slug: "{{slug}}"
+    fields: *entryFields
+
+  - name: "sira"
+    label: "Sira (Prophet's Biography)"
+    folder: "src/content/sira"
+    create: true
+    slug: "{{slug}}"
+    fields: *entryFields

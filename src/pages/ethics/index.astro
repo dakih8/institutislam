@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryIndex from '../../components/CategoryIndex.astro';
+
+const entries = await getCollection('ethics');
+---
+<CategoryIndex
+  categoryTitle="Islamic Ethics"
+  categoryDescription="Teachings on character, conduct, and dealing with others."
+  basePath="/ethics"
+  entries={entries}
+/>
