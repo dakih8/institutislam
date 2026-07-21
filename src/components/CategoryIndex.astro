@@ -29,15 +29,19 @@ const sorted = [...entries].sort((a, b) => (a.data.order ?? 999) - (b.data.order
       <a class="back-link" href="/">&larr; All categories</a>
       <h1>{categoryTitle}</h1>
       <p>{categoryDescription}</p>
+
+      <form class="filter-form" id="filterForm">
+        <input type="search" id="filterInput" name="q" placeholder={`Search ${categoryTitle}..`} aria-label={`Search ${categoryTitle}`} />
+      </form>
     </div>
   </section>
 
   <section class="entry-list">
     <div class="container">
-      {sorted.length === 0 && <p class="empty">No entries have been published in this category yet.</p>}
-      <ul>
+      <p class="empty" id="emptyMessage" hidden>No entries matched your search.</p>
+      <ul id="entryList">
         {sorted.map((entry) => (
-          <li>
+          <li data-search={`${entry.data.title} ${entry.data.summary}`.toLowerCase()}>
             <a href={`${basePath}/${entry.slug}`}>
               <h2>{entry.data.title}</h2>
               <p>{entry.data.summary}</p>
@@ -46,9 +50,59 @@ const sorted = [...entries].sort((a, b) => (a.data.order ?? 999) - (b.data.order
           </li>
         ))}
       </ul>
+      {sorted.length === 0 && <p class="empty">No entries have been published in this category yet.</p>}
     </div>
   </section>
 </Layout>
+
+<script>
+  // Static sites can't filter server-side per-request, so we do it here
+  // in the browser: read ?q= from the real URL, filter the list client
+  // side, and keep the URL in sync as the person types.
+  const input = document.getElementById('filterInput') as HTMLInputElement | null;
+  const list = document.getElementById('entryList');
+  const emptyMessage = document.getElementById('emptyMessage');
+  const items = list ? Array.from(list.querySelectorAll('li')) : [];
+
+  function applyFilter(query: string) {
+    const q = query.trim().toLowerCase();
+    let visibleCount = 0;
+    for (const item of items) {
+      const haystack = item.getAttribute('data-search') || '';
+      const match = q === '' || haystack.includes(q);
+      (item as HTMLElement).style.display = match ? '' : 'none';
+      if (match) visibleCount++;
+    }
+    if (emptyMessage) {
+      emptyMessage.hidden = !(q !== '' && visibleCount === 0);
+    }
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const initialQuery = params.get('q') || '';
+  if (input) {
+    input.value = initialQuery;
+  }
+  applyFilter(initialQuery);
+
+  if (input) {
+    input.addEventListener('input', () => {
+      applyFilter(input.value);
+      const url = new URL(window.location.href);
+      if (input.value) {
+        url.searchParams.set('q', input.value);
+      } else {
+        url.searchParams.delete('q');
+      }
+      window.history.replaceState({}, '', url);
+    });
+  }
+
+  const form = document.getElementById('filterForm');
+  if (form) {
+    form.addEventListener('submit', (e) => e.preventDefault());
+  }
+</script>
 
 <style>
   .category-hero {
@@ -68,6 +122,23 @@ const sorted = [...entries].sort((a, b) => (a.data.order ?? 999) - (b.data.order
   .category-hero p {
     color: var(--color-sage);
     max-width: 640px;
+  }
+
+  .filter-form {
+    max-width: 420px;
+    margin-top: 18px;
+  }
+  .filter-form input {
+    width: 100%;
+    padding: 12px 18px;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+  }
+  .filter-form input:focus {
+    outline: none;
+    border-color: var(--color-gold);
   }
 
   .entry-list {
