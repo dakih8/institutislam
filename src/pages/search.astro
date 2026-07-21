@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
 const collectionsMeta: Record<string, { title: string; base: string }> = {
-  tafseer: { title: 'Tefsri i Kuranit', base: '/tafseer' },
+  tafseer: { title: 'Tafseer of the Quran', base: '/tafseer' },
   hadith: { title: 'Hadiths', base: '/hadith' },
   aqidah: { title: 'Doctrine of Monotheism', base: '/aqidah' },
   fiqh: { title: 'Summary of Fiqh', base: '/fiqh' },
@@ -23,44 +23,86 @@ for (const key of Object.keys(collectionsMeta)) {
     });
   }
 }
-
-const query = Astro.url.searchParams.get('q')?.trim().toLowerCase() ?? '';
-const results = query
-  ? allEntries.filter(
-      (e) => e.title.toLowerCase().includes(query) || e.summary.toLowerCase().includes(query)
-    )
-  : [];
 ---
-<Layout title={`Search — Islamic Knowledge Encyclopedia`}>
+<Layout title="Search — Islamic Knowledge Encyclopedia">
   <section class="search-page">
     <div class="container">
       <a class="back-link" href="/">&larr; All categories</a>
       <h1>Search results</h1>
-      <form action="/search" method="get" class="search-form">
-        <input type="search" name="q" value={query} placeholder="Search everything .." aria-label="Search" />
+      <form class="search-form" id="searchForm">
+        <input type="search" id="searchInput" name="q" placeholder="Search everything .." aria-label="Search" />
         <button type="submit">Search</button>
       </form>
 
-      {query && (
-        <p class="result-count">{results.length} result{results.length === 1 ? '' : 's'} for &ldquo;{query}&rdquo;</p>
-      )}
-
-      <ul>
-        {results.map((r) => (
-          <li>
-            <a href={r.href}>
-              <span class="category-label">{r.category}</span>
-              <h2>{r.title}</h2>
-              <p>{r.summary}</p>
-            </a>
-          </li>
-        ))}
-      </ul>
-
-      {query && results.length === 0 && <p class="empty">No entries matched your search yet.</p>}
+      <p class="result-count" id="resultCount" hidden></p>
+      <ul id="resultsList"></ul>
+      <p class="empty" id="emptyMessage" hidden>No entries matched your search yet.</p>
+      <p class="hint" id="hintMessage">Start typing above to search across all six categories.</p>
     </div>
   </section>
 </Layout>
+
+<script define:vars={{ allEntries }}>
+  const input = document.getElementById('searchInput');
+  const list = document.getElementById('resultsList');
+  const resultCount = document.getElementById('resultCount');
+  const emptyMessage = document.getElementById('emptyMessage');
+  const hintMessage = document.getElementById('hintMessage');
+
+  function render(query) {
+    const q = query.trim().toLowerCase();
+
+    if (!q) {
+      list.innerHTML = '';
+      resultCount.hidden = true;
+      emptyMessage.hidden = true;
+      hintMessage.hidden = false;
+      return;
+    }
+
+    hintMessage.hidden = true;
+
+    const results = allEntries.filter(
+      (e) => e.title.toLowerCase().includes(q) || e.summary.toLowerCase().includes(q)
+    );
+
+    resultCount.hidden = false;
+    resultCount.textContent = `${results.length} result${results.length === 1 ? '' : 's'} for "${query}"`;
+
+    emptyMessage.hidden = results.length !== 0;
+
+    list.innerHTML = results
+      .map(
+        (r) => `
+        <li>
+          <a href="${r.href}">
+            <span class="category-label">${r.category}</span>
+            <h2>${r.title}</h2>
+            <p>${r.summary}</p>
+          </a>
+        </li>`
+      )
+      .join('');
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const initialQuery = params.get('q') || '';
+  input.value = initialQuery;
+  render(initialQuery);
+
+  input.addEventListener('input', () => {
+    render(input.value);
+    const url = new URL(window.location.href);
+    if (input.value) {
+      url.searchParams.set('q', input.value);
+    } else {
+      url.searchParams.delete('q');
+    }
+    window.history.replaceState({}, '', url);
+  });
+
+  document.getElementById('searchForm').addEventListener('submit', (e) => e.preventDefault());
+</script>
 
 <style>
   .search-page {
@@ -84,6 +126,10 @@ const results = query
     border-radius: 999px;
     font-family: var(--font-body);
   }
+  .search-form input:focus {
+    outline: none;
+    border-color: var(--color-gold);
+  }
   .search-form button {
     padding: 12px 22px;
     background: var(--color-gold);
@@ -95,7 +141,7 @@ const results = query
   .search-form button:hover {
     background: var(--color-gold-dark);
   }
-  .result-count {
+  .result-count, .hint {
     color: var(--color-sage);
     font-size: 0.9rem;
   }
