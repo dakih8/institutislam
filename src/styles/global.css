@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   /* Palette */
@@ -16,6 +16,7 @@
   /* Type */
   --font-display: 'Amiri', 'Georgia', serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-quran: 'Amiri Quran', 'Amiri', 'Traditional Arabic', serif;
 
   --radius: 10px;
   --shadow-card: 0 1px 2px rgba(31, 42, 31, 0.06), 0 6px 20px rgba(31, 42, 31, 0.06);
@@ -64,8 +65,7 @@ p {
   padding: 0 24px;
 }
 
-/* Geometric divider motif — the signature detail, echoing manuscript
-   illumination without being literal ornamentation. */
+/* Geometric divider motif */
 .motif-rule {
   height: 6px;
   width: 100%;
@@ -87,6 +87,33 @@ button {
 :focus-visible {
   outline: 3px solid var(--color-gold-dark);
   outline-offset: 2px;
+}
+
+/* --- Arabic / Quran text support ---
+   Use these in the CMS markdown body by wrapping Arabic text in a span,
+   e.g.:  <span class="ayah">وَإِذْ قَالَ رَبُّكَ لِلْمَلَائِكَةِ</span>
+   Important: paste STANDARD Arabic Unicode text (with diacritics), not
+   glyphs copied from a Quran app's special "page font" — those only
+   render correctly with that one exact proprietary font. Get clean
+   Uthmani Unicode verses from https://tanzil.net/download/ instead. */
+.ayah,
+.quran-text {
+  display: block;
+  font-family: var(--font-quran);
+  direction: rtl;
+  unicode-bidi: isolate;
+  text-align: center;
+  font-size: 1.7rem;
+  line-height: 2.5;
+  color: var(--color-green-dark);
+  margin: 1.5em 0;
+}
+
+/* For a short inline Arabic word/phrase within otherwise English text */
+.ar {
+  font-family: var(--font-quran);
+  direction: rtl;
+  unicode-bidi: isolate;
 }
 
 @media (prefers-reduced-motion: reduce) {
