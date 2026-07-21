@@ -19,6 +19,23 @@ const { title, description = 'A structured English-language Islamic knowledge en
     <title>{title}</title>
   </head>
   <body>
+    <!-- Netlify Identity widget: present here (not just on /admin) so that
+         invite/confirmation/recovery links — which redirect to the site
+         root by default — can be caught and processed correctly, then
+         forwarded into the CMS. -->
+    <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script is:inline>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', (user) => {
+          // If we landed here because of an invite/confirm/recovery token,
+          // netlifyIdentity picks it up automatically and fires 'login'
+          // once the person sets their password. Send them into the CMS.
+          window.netlifyIdentity.on('login', () => {
+            window.location.href = '/admin/';
+          });
+        });
+      }
+    </script>
     <Header />
     <main>
       <slot />
